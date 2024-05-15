@@ -52,8 +52,8 @@ void on_message(endpoint_t from, Message msg) {
     if (ep_equal(g_server, from)) {
         switch (msg.head.type) {
             case MTYPE_PUNCH:
-                { 
-                    endpoint_t peer = ep_fromstring(msg.body); 
+                {
+                    endpoint_t peer = ep_fromstring(msg.body);
                     log_info("%s on call, replying...", ep_tostring(peer));
                     udp_send_text(g_clientfd, peer, MTYPE_REPLY, NULL);
                 }
@@ -80,10 +80,12 @@ void on_message(endpoint_t from, Message msg) {
              * but it could happen when it come after we reply the punch request from server,
              * or there's a tunnel already.
              * */
+            log_info("Peer(%s) punched", ep_tostring(from));
             udp_send_text(g_clientfd, from, MTYPE_TEXT, "I SEE YOU");
             break;
         case MTYPE_PING:
             udp_send_text(g_clientfd, from, MTYPE_PONG, NULL);
+            log_info("Peer(%s) pinged", ep_tostring(from));
         default:
             break;
     }
